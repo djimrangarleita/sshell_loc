@@ -1,8 +1,14 @@
 #include "main.h"
 
+/**
+ * _strtok - tokenize user inputs
+ * @str: cmd red from stdin
+ * @delim: token delimiter
+ * Return: array of ptrs to tokens
+ */
 char **_strtok(char *str, char *delim)
 {	
-	int i, toksnum = 0;
+	int i, j, toksnum = 0;
 	char *tok, *dupstr, **toks;
 
 	dupstr = _strdup(str);
@@ -19,6 +25,15 @@ char **_strtok(char *str, char *delim)
 	for (i = 0; i < toksnum; i++)
 	{
 		toks[i] = malloc(sizeof(char) * _strlen(tok));
+		if (!toks[i])
+		{
+			for (j = 0; j < i; j++)
+			{
+				free(toks[i]);
+			}
+			free(toks);
+			return (NULL);
+		}
 		_strcpy(toks[i], tok);
 		tok = strtok(NULL, delim);
 	}
@@ -27,6 +42,11 @@ char **_strtok(char *str, char *delim)
 	return (toks);
 }
 
+/**
+ * findxpath - find full path of an executable
+ * @input: ptr to user's path
+ * Return: full path of an exec or input
+ */
 char *findxpath(char *input)
 {
 	int i;
@@ -35,7 +55,7 @@ char *findxpath(char *input)
 
 	if (*input == '/')
 	{
-		return (input);
+		return (_strdup(input));
 	}
 
 	i = 0;
@@ -49,7 +69,7 @@ char *findxpath(char *input)
 			path = strtok(val, ":");
 			while (path != NULL)
 			{
-				tmp = strdup(path);
+				tmp = _strdup(path);
 				tmp = _strcat(tmp, "/");
 				tmpcat = _strcat(tmp, input);
 				if (stat(tmpcat, &buf) == 0)
@@ -57,6 +77,7 @@ char *findxpath(char *input)
 					pathexec = malloc(_strlen(tmpcat) * sizeof(char));
 					pathexec = _strcpy(pathexec, tmpcat);
 
+					free(tmp);
 					return (pathexec);
 				}
 				path = strtok(NULL, ":");
@@ -65,9 +86,13 @@ char *findxpath(char *input)
 		i++;
 	}
 
-	return (input);
+	return (_strdup(input));
 }
 
+/**
+ * free_toks - free mem allocated to tokens
+ * @tokens: array of toks
+ */
 void free_toks(char **tokens)
 {
 	int i = 0;
@@ -77,6 +102,12 @@ void free_toks(char **tokens)
 	free(tokens);
 }
 
+/**
+ * readcmd - use getline func to read user input
+ * @line: ptr to stdin
+ * @len: length of elt
+ * Return: chars read or exit -1
+ */
 int readcmd(char **line, size_t *len)
 {
 	int rchars;

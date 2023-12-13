@@ -35,7 +35,6 @@ int _cd(char **cmd, char *errormsg)
 	if (!cmd[1] || _strcmp(cmd[1], "~") == 0)
 	{
 		cmd[1] = getdir("HOME", cmd[1]);
-		_printf("%s\n", cmd[1]);
 	}
 	else if (_strcmp(cmd[1], "-") == 0)
 	{

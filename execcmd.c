@@ -2,7 +2,9 @@
 
 /**
  * execcmd - execute cmd,
- * @argv: the cmd to be executed
+ * @cmd: the cmd to be executed
+ * @errormsg: error msg to print in case execve fails
+ * Return: exec code indicating error
  */
 int execcmd(char **cmd, char *errormsg)
 {
@@ -14,6 +16,13 @@ int execcmd(char **cmd, char *errormsg)
 	return (execode);
 }
 
+/**
+ * shell_int - interactive shell
+ * @line: ptr to list of args
+ * @len: ptr to size_t var, length of line
+ * @pname: program name, to print alongside error msg
+ * Return: int indicating exec status
+ */
 int shell_int(char **line, size_t *len, char *pname)
 {
 	char *path, **toks;
@@ -28,13 +37,11 @@ int shell_int(char **line, size_t *len, char *pname)
 		if (*line[0] != '\n')
 		{
 			toks = _strtok(*line, " \t\n");
-			/*free(*line);*/
 			btin = is_btin(toks[0]);
 
 			if (btin)
 			{
 				btin(toks, pname);
-				/*free_toks(toks);*/
 			}
 			else
 			{
@@ -45,13 +52,20 @@ int shell_int(char **line, size_t *len, char *pname)
 				readx(toks, pname, buf, &child_pid);
 			}
 		}
-		/*free(*line);*/
 		free_toks(toks);
 	}
+	free(*line);
 
 	return (0);
 }
 
+/**
+ * shelln_int - non interactive version of the shell
+ * @line: ptd to stdin inputs
+ * @len: size_t var, length of stdin
+ * @pname: name of the program, print alongside error msg
+ * Return: int, exec status
+ */
 int shelln_int(char **line, size_t *len, char *pname)
 {
 	char *path, **toks;
@@ -61,7 +75,6 @@ int shelln_int(char **line, size_t *len, char *pname)
 
 	readcmd(line, len);
 	toks = _strtok(*line, " \t\n");
-	/*free(*line);*/
 
 	btin = is_btin(toks[0]);
 
@@ -79,19 +92,32 @@ int shelln_int(char **line, size_t *len, char *pname)
 	}
 
 	free_toks(toks);
+	free(*line);
 
 	return (execres);
 }
 
+/**
+ * readx - read and execute program
+ * @toks: tokenized cmd
+ * @pname: name of the program
+ * @buf: buffer, will hold result of stat
+ * @child_pid: will hold the pid of process
+ * Return: int, exec status
+ */
 int readx(char **toks, char *pname, struct stat buf, pid_t *child_pid)
 {
-	if (stat(toks[0], &buf) == 0)
+	if (stat(toks[0], &buf) != 0)
+	{
+		_perror(pname);
+		return (-1);
+	}
+	else
 	{
 		*child_pid = fork();
 		if (*child_pid == -1)
 		{
 			_perror("Error:");
-			/*free_toks(toks);*/
 			return (-1);
 		}
 		else if (*child_pid == 0)
@@ -101,12 +127,7 @@ int readx(char **toks, char *pname, struct stat buf, pid_t *child_pid)
 		else
 		{
 			wait(NULL);
-			/*free_toks(toks);*/
 		}
-	} else {
-		_perror(pname);
-		/*free_toks(toks);*/
-		return (-1);
 	}
 
 	return (0);
