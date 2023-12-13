@@ -32,6 +32,9 @@ int _printenv(char **cmd, char *errormsg)
  */
 int _cd(char **cmd, char *errormsg)
 {
+	char *buf, *ptr;
+	size_t size;
+
 	if (!cmd[1] || _strcmp(cmd[1], "~") == 0)
 	{
 		cmd[1] = getdir("HOME", cmd[1]);
@@ -45,6 +48,14 @@ int _cd(char **cmd, char *errormsg)
 	{
 		_perror(errormsg);
 		return (-1);
+	}
+	else
+	{
+		buf = malloc((size_t)size);
+		/*setenv("OLDPWD", getcwd(), 1);*/
+		ptr = getcwd(buf, size);
+		_printf("%s\n", ptr);
+		/*setenv("PWD", pwd, 1);*/
 	}
 
 	return (0);
