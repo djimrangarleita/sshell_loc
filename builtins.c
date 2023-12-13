@@ -13,7 +13,7 @@ int _printenv(char **cmd, char *errormsg)
 	i = 0;
 	while (cmd && environ[i] != NULL)
 	{
-		printf("%s\n", environ[i++]);
+		_printf("%s\n", environ[i++]);
 	}
 
 	if (i <= 0)

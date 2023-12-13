@@ -11,6 +11,8 @@ char **_strtok(char *str, char *delim)
 	int i, j, toksnum = 0;
 	char *tok, *dupstr, **toks;
 
+	if (!str || !str[0])
+		return (NULL);
 	dupstr = _strdup(str);
 	tok = strtok(dupstr, delim);
 	while (tok != NULL)
@@ -50,7 +52,7 @@ char **_strtok(char *str, char *delim)
 char *findxpath(char *input)
 {
 	int i;
-	char *key, *val, *path, *tmp, *tmpcat, *pathexec, *tmpenv = NULL;
+	char *key, *val, *path, *tmp = NULL, *tmpcat, *pathexec, *tmpenv = NULL;
 	struct stat buf;
 
 	if (*input == '/')
@@ -61,7 +63,7 @@ char *findxpath(char *input)
 	i = 0;
 	while (environ[i] != NULL)
 	{
-		tmpenv = strdup(environ[i]);
+		tmpenv = _strdup(environ[i]);
 		key = strtok(tmpenv, "=");
 		val = strtok(NULL, "=");
 		if (_strcmp(key, "PATH") == 0)
@@ -76,8 +78,8 @@ char *findxpath(char *input)
 				{
 					pathexec = malloc(_strlen(tmpcat) * sizeof(char));
 					pathexec = _strcpy(pathexec, tmpcat);
-
 					free(tmp);
+					free(tmpenv);
 					return (pathexec);
 				}
 				path = strtok(NULL, ":");
@@ -85,7 +87,8 @@ char *findxpath(char *input)
 		}
 		i++;
 	}
-
+	free(tmp);
+	free(tmpenv);
 	return (_strdup(input));
 }
 
@@ -97,7 +100,7 @@ void free_toks(char **tokens)
 {
 	int i = 0;
 
-	while (tokens[i] != NULL)
+	while (tokens && tokens[i] != NULL)
 		free(tokens[i++]);
 	free(tokens);
 }

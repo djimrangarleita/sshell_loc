@@ -51,8 +51,8 @@ int shell_int(char **line, size_t *len, char *pname)
 
 				readx(toks, pname, buf, &child_pid);
 			}
+			free_toks(toks);
 		}
-		free_toks(toks);
 	}
 	free(*line);
 
@@ -69,11 +69,13 @@ int shell_int(char **line, size_t *len, char *pname)
 int shelln_int(char **line, size_t *len, char *pname)
 {
 	char *path, **toks;
-	int execres, (*btin)(char **, char *);
+	int execres, (*btin)(char **, char *), rchars;
 	pid_t child_pid;
 	struct stat buf;
 
-	readcmd(line, len);
+	rchars = readcmd(line, len);
+	if (rchars < 1)
+		return (-1);
 	toks = _strtok(*line, " \t\n");
 
 	btin = is_btin(toks[0]);
