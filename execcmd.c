@@ -69,17 +69,19 @@ int shell_int(char **line, size_t *len, char *pname)
 int shelln_int(char **line, size_t *len, char *pname)
 {
 	char *path, **toks;
-	int execres, (*btin)(char **, char *), rchars;
+	int execres, (*btin)(char **, char *);
 	pid_t child_pid;
 	struct stat buf;
 
-	rchars = readcmd(line, len);
-	if (rchars < 1)
-		return (-1);
+	readcmd(line, len);
 	toks = _strtok(*line, " \t\n");
 
 	btin = is_btin(toks[0]);
-
+	if (!toks[0])
+	{
+		_printf("Usage: %s: [command] [argument]\n", pname);
+		return (-1);
+	}
 	if (btin)
 	{
 		execres = btin(toks, pname);

@@ -26,7 +26,7 @@ char **_strtok(char *str, char *delim)
 	tok = strtok(str, delim);
 	for (i = 0; i < toksnum; i++)
 	{
-		toks[i] = malloc(sizeof(char) * _strlen(tok));
+		toks[i] = malloc(sizeof(char) * _strlen(tok) + 1);
 		if (!toks[i])
 		{
 			for (j = 0; j < i; j++)
