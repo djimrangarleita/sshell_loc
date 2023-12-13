@@ -37,7 +37,7 @@ int ppstr(va_list ap, char *spec)
 
 /**
  * _perror - print error msg to stderr
- * @msg: error msg to print
+ * @errormsg: error msg to print
  */
 void _perror(char *errormsg)
 {

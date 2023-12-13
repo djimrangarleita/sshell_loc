@@ -8,7 +8,8 @@
  */
 int _printf(const char *format, ...)
 {
-	pfunc_t pfuncs[] = {{"c", ppchar}, {"s", ppstr}, {"d", ppnum}, {"i", ppnum}, {NULL, NULL}};
+	pfunc_t pfuncs[] = {{"c", ppchar}, {"s", ppstr}, {"d", ppnum}, {"i",
+		ppnum}, {NULL, NULL}};
 	va_list ap;
 	int i, j, count;
 
@@ -44,6 +45,5 @@ int _printf(const char *format, ...)
 
 		i++;
 	}
-
 	return (count);
 }

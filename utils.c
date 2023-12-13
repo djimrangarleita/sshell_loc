@@ -7,7 +7,7 @@
  * Return: array of ptrs to tokens
  */
 char **_strtok(char *str, char *delim)
-{	
+{
 	int i, j, toksnum = 0;
 	char *tok, *dupstr, **toks;
 
@@ -20,7 +20,7 @@ char **_strtok(char *str, char *delim)
 	}
 	toks = malloc(sizeof(char *) * toksnum + 1);
 	free(dupstr);
-	
+
 	tok = strtok(str, delim);
 	for (i = 0; i < toksnum; i++)
 	{
