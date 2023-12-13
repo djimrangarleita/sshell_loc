@@ -32,6 +32,10 @@ int _printenv(char **cmd, char *errormsg)
  */
 int _cd(char **cmd, char *errormsg)
 {
+	char buf[1024], *ptr;
+	char oldpwd[500], *ptroldpwd;
+
+	ptroldpwd = getcwd(oldpwd, 500);
 	if (!cmd[1] || _strcmp(cmd[1], "~") == 0)
 	{
 		cmd[1] = getdir("HOME", cmd[1]);
@@ -45,6 +49,12 @@ int _cd(char **cmd, char *errormsg)
 	{
 		_perror(errormsg);
 		return (-1);
+	}
+	else
+	{
+		ptr = getcwd(buf, 1024);
+		setenv("PWD", ptr, 1);
+		setenv("OLDPWD", ptroldpwd, 1);
 	}
 
 	return (0);
